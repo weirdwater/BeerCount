@@ -1,32 +1,50 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['drinker']) && isset($_POST['drinkers']) ) {
-    $drinkerIndex = $_POST['drinker'];
-    $drinkers = string_to_array($_POST['drinkers']);
-    $drinkers[$drinkerIndex][1]++;
-}
-else {
-    $drinkers = [
-        [
-            'Andreas',
-            0
-        ],
-        [
-            'Arjo',
-            0
-        ],
-        [
-            'Hans',
-            0
-        ],
-        [
-            'Guests',
-            0
-        ]
+include 'settings.php';
 
-    ];
+try {
+    $db = new PDO('mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME, DB_USER, DB_PASS);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db->exec('SET NAMES \'utf8\'');
+} catch (PDOException $e) {
+    echo 'Whoops something went wrong! [1] '. $e->getMessage() .' '. $e->getFile();
+    exit;
 }
+
+// Add to log
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['drinker']) ) {
+    $drinkerId = $_POST['drinker'];
+
+    try {
+        $addBeer = $db->prepare("
+            INSERT INTO Log (beerId, drinkerId)
+            VALUES (2, ?)
+        ");
+        $addBeer->bindParam(1, $drinkerId, PDO::PARAM_INT);
+        $addBeer->execute();
+    } catch (PDOException $e) {
+        echo 'Whoops something went wrong! [2] '. $e->getMessage() .' '. $e->getFile();
+        exit;
+    }
+}
+
+// Fetch all drinker data
+try {
+    $drinkers = $db->query("
+      SELECT d.drinkerId, d.name, (
+        SELECT COUNT(entryId)
+        FROM Log l
+        WHERE l.drinkerId = d.drinkerId
+      ) as 'count'
+      FROM Drinkers d
+    ");
+    $drinkers->execute();
+    $drinkers = $drinkers->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo 'Whoops something went wrong! [3] '. $e->getMessage() .' '. $e->getFile();
+    exit;
+}
+
 $title = 'Beer Score';
-$drinkers_string = array_to_string($drinkers);
 
 function array_to_string(array $array, $lvl = 0)
 {
@@ -77,11 +95,10 @@ function pre_dump($var)
         <div class="drinkers">
             <?php foreach ($drinkers as $key => $drinker) { ?>
                 <section class="drinker">
-                    <h2><?= $drinker[0] ?></h2>
-                    <h3><?= $drinker[1] ?></h3>
+                    <h2><?= $drinker['name'] ?></h2>
+                    <h3><?= $drinker['count'] ?></h3>
                     <form action="#" method="post">
-                        <input type="hidden" name="drinker" value="<?= $key ?>" />
-                        <input type="hidden" name="drinkers" value="<?= $drinkers_string ?>" />
+                        <input type="hidden" name="drinker" value="<?= $drinker['drinkerId']  ?>" />
                         <input type="submit" value="+1" />
                     </form>
                 </section>
