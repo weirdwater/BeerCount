@@ -1,13 +1,64 @@
+.content-box, body header, body .container .drinkers .drinker, body .container .stats {
+  padding: 1em;
+  background-color: #FBFBFF;
+  box-shadow: 0 1px 4px #757575;
+  margin-bottom: 1em; }
+
 body {
   font-size: 18px;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  font-family: "Source Sans Pro", sans-serif;
+  background-color: #01BAEF;
+  min-width: 220px; }
+  body header {
+    padding-top: 1.5em;
+    padding-bottom: 0; }
+    body header h1 {
+      margin: 0; }
   body .container {
     max-width: 960px;
     margin: 0 auto; }
     body .container .drinkers {
-      display: flex; }
+      display: flex;
+      flex-flow: row; }
+      @media (max-width: 660px) {
+        body .container .drinkers {
+          flex-flow: column; } }
       body .container .drinkers .drinker {
-        flex: 1; }
+        margin-left: 5px;
+        margin-right: 5px;
+        min-width: 100px;
+        max-width: 300px; }
+        body .container .drinkers .drinker h2 {
+          border-bottom: 1px dashed #757575; }
+        body .container .drinkers .drinker img {
+          max-width: 100%;
+          border-radius: 100%; }
+        body .container .drinkers .drinker .count {
+          text-align: center;
+          font-size: 2em; }
+        body .container .drinkers .drinker button {
+          width: 100%;
+          padding: 0.3em;
+          font-size: 1.5em;
+          font-family: "Source Sans Pro", sans-serif;
+          font-weight: 700;
+          background-color: #20bf55;
+          color: #FBFBFF;
+          border: none;
+          transition: 0.1s; }
+        body .container .drinkers .drinker button:hover {
+          background-color: #26e064; }
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Oleo Script", cursive; }
+
+h1 {
+  color: #000;
+  font-size: 2.5em; }
 
 /*# sourceMappingURL=site.css.map */
