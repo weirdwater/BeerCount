@@ -1,0 +1,13 @@
+body {
+  font-size: 18px;
+  margin: 0;
+  padding: 0; }
+  body .container {
+    max-width: 960px;
+    margin: 0 auto; }
+    body .container .drinkers {
+      display: flex; }
+      body .container .drinkers .drinker {
+        flex: 1; }
+
+/*# sourceMappingURL=site.css.map */
